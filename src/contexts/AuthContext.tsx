@@ -5,9 +5,7 @@ import { User } from '../types';
 
 interface DecodedToken {
     sub: string;
-    roles: string[];
     exp: number;
-    name: string;
 }
 
 interface AuthContextType {
@@ -32,59 +30,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (token) {
             try {
                 const decoded = jwtDecode<DecodedToken>(token);
-                // Verificar se o token expirou
                 if (decoded.exp * 1000 < Date.now()) {
                     logout();
                     return;
                 }
-
-                // Se o token é válido, carrega os dados do usuário do localStorage
+                // Busca o usuário do localStorage
                 const storedUser = localStorage.getItem('user');
                 if (storedUser) {
                     setUser(JSON.parse(storedUser));
+                } else {
+                    // Se não tem user salvo, busca do backend
+                    fetchUser(token);
                 }
             } catch (error) {
-                // Se o token for inválido (malformado, etc), desloga.
                 logout();
             }
         }
-        // A array de dependências vazia [] garante que isso só rode uma vez, no início.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Função para buscar dados do usuário autenticado
+    const fetchUser = async (token: string) => {
+        try {
+            const res = await api.get('/users/me', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUser(res.data);
+            localStorage.setItem('user', JSON.stringify(res.data));
+        } catch (error) {
+            logout();
+        }
+    };
 
     const login = async (email: string, password: string) => {
         try {
             const response = await api.post('/auth/login', { email, password });
             const { token } = response.data;
 
-            // CORREÇÃO AQUI: Use o 'token' da resposta da API, não 'storedToken'.
-            const decoded = jwtDecode<DecodedToken>(token);
-
-            const userData: User = {
-                id: parseInt(decoded.sub),
-                name: decoded.name,
-                email: email,
-                role: decoded.roles[0]
-            };
-
-            setUser(userData);
+            // Salva token
             setToken(token);
-
             localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(userData));
 
+            // Busca dados do usuário autenticado no backend
+            await fetchUser(token);
         } catch (error) {
-            console.error('Login failed:', error);
+            logout();
             throw error;
         }
     };
 
     const register = async (name: string, email: string, password: string) => {
-        try {
-            await api.post('/auth/register', { name, email, password });
-        } catch (error) {
-            console.error('Registration failed:', error);
-            throw error;
-        }
+        await api.post('/auth/register', { name, email, password });
     };
 
     const logout = () => {
