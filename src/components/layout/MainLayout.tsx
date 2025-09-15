@@ -14,7 +14,7 @@ import {
     useTheme,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import SidebarItems from './SidebarItems';
+import SidebarItems from '../SidebarItems';
 import UserMenu from './UserMenu';
 
 const drawerWidth = 240;
