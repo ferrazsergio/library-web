@@ -4,11 +4,13 @@ import { BookDTO } from '../../types/book';
 import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { useNavigate } from 'react-router-dom';
 
 const BookListPage: React.FC = () => {
     const [books, setBooks] = useState<BookDTO[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const loadBooks = async () => {
         try {
@@ -64,7 +66,7 @@ const BookListPage: React.FC = () => {
                                 <TableCell>{book.category?.name}</TableCell>
                                 <TableCell>{book.availableQuantity}</TableCell>
                                 <TableCell>
-                                    <IconButton size="small" color="primary" href={`/books/${book.id}/edit`}>
+                                    <IconButton size="small" color="primary" onClick={() => navigate(`/books/${book.id}/edit`)}>
                                         <EditIcon />
                                     </IconButton>
                                     <IconButton size="small" color="error" onClick={() => handleDelete(book.id)}>
@@ -84,7 +86,7 @@ const BookListPage: React.FC = () => {
             <Typography variant="h4" gutterBottom>
                 Livros
             </Typography>
-            <Button variant="contained" color="primary" sx={{ mb: 2 }} href="/books/new">
+            <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={() => navigate('/books/new')}>
                 Adicionar Livro
             </Button>
             {content}
