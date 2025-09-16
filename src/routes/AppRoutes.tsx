@@ -16,6 +16,9 @@ import NotFoundPage from '../pages/NotFoundPage';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import BookListPage from '../pages/books/BookListPage';
 import BookFormPage from '../pages/books/BookFormPage';
+import AuthorListPage from '../pages/authors/AuthorListPage';
+import AuthorFormPage from '../pages/authors/AuthorFormPage';
+
 
 const AppRoutes: React.FC = () => {
     return (
@@ -33,7 +36,9 @@ const AppRoutes: React.FC = () => {
                     <Route path="/books" element={<BookListPage />} />
                     <Route path="/books/new" element={<BookFormPage />} />
                     <Route path="/books/:id/edit" element={<BookFormPage />} />
-                    {/* Mais rotas serão adicionadas aqui conforme desenvolvemos */}
+                    <Route path="/authors" element={<AuthorListPage />} />
+                    <Route path="/authors/new" element={<AuthorFormPage />} />
+                    <Route path="/authors/:id/edit" element={<AuthorFormPage />} />
                 </Route>
             </Route>
 
