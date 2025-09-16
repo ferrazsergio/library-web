@@ -2,16 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card, CardContent, CircularProgress, Paper, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { fetchDashboardData, fetchMostBorrowedCategories, fetchRecentActivities } from '../../api/dashboardApi';
-
-// Tipos para os dados da API para melhorar a segurança de tipo
-interface DashboardData {
-    totalBooks: number;
-    activeLoans: number;
-    overdueLoans: number;
-    totalUsers: number;
-    totalLoans: number;
-}
+import { fetchDashboardData } from '../../api/dashboardApi';
 
 interface CategoryData {
     category: string;
@@ -26,18 +17,20 @@ interface ActivityData {
     bookTitle: string;
 }
 
-// Tipo para os dados do gráfico de pizza
-interface PieDataEntry {
-    name: string;
-    value: number;
+interface DashboardData {
+    totalBooks: number;
+    activeLoans: number;
+    overdueLoans: number;
+    totalUsers: number;
+    totalLoans: number;
+    mostBorrowedCategories: CategoryData[];
+    recentActivities: ActivityData[];
 }
 
 const COLORS = ['#0088FE', '#FF8042', '#00C49F', '#FFBB28', '#A28CFF'];
 
 const DashboardPage = () => {
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-    const [categories, setCategories] = useState<CategoryData[]>([]);
-    const [activities, setActivities] = useState<ActivityData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -45,15 +38,8 @@ const DashboardPage = () => {
         const loadDashboardData = async () => {
             try {
                 setLoading(true);
-                const [dataResponse, categoriesResponse, activitiesResponse] = await Promise.all([
-                    fetchDashboardData(),
-                    fetchMostBorrowedCategories(),
-                    fetchRecentActivities(5)
-                ]);
-
+                const dataResponse = await fetchDashboardData();
                 setDashboardData(dataResponse);
-                setCategories(categoriesResponse);
-                setActivities(activitiesResponse);
             } catch (err) {
                 console.error('Error loading dashboard data:', err);
                 setError('Failed to load dashboard data. Please try again later.');
@@ -61,7 +47,6 @@ const DashboardPage = () => {
                 setLoading(false);
             }
         };
-
         loadDashboardData();
     }, []);
 
@@ -73,21 +58,21 @@ const DashboardPage = () => {
         );
     }
 
-    if (error) {
+    if (error || !dashboardData) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <Typography color="error">{error}</Typography>
+                <Typography color="error">{error || "Erro ao carregar dados do dashboard."}</Typography>
             </Box>
         );
     }
 
-    const pieChartData: PieDataEntry[] = [
-        { name: 'Ativos', value: dashboardData?.activeLoans || 0 },
-        { name: 'Atrasados', value: dashboardData?.overdueLoans || 0 },
-        { name: 'Devolvidos', value: Math.max(0, (dashboardData?.totalLoans || 0) - ((dashboardData?.activeLoans || 0) + (dashboardData?.overdueLoans || 0))) },
+    const pieChartData = [
+        { name: 'Ativos', value: dashboardData.activeLoans },
+        { name: 'Atrasados', value: dashboardData.overdueLoans },
+        { name: 'Devolvidos', value: Math.max(0, dashboardData.totalLoans - (dashboardData.activeLoans + dashboardData.overdueLoans)) },
     ];
 
-    // CORREÇÃO: Usar 'any' para evitar conflitos de tipo com Recharts
+    // Usar 'any' para evitar conflitos de tipo com Recharts
     const renderPieLabel = (entry: any) => {
         return `${entry.name}: ${(entry.percent * 100).toFixed(0)}%`;
     };
@@ -104,7 +89,7 @@ const DashboardPage = () => {
                     <Card>
                         <CardContent>
                             <Typography variant="subtitle1" color="textSecondary">Total de Livros</Typography>
-                            <Typography variant="h4">{dashboardData?.totalBooks || 0}</Typography>
+                            <Typography variant="h4">{dashboardData.totalBooks}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -113,7 +98,7 @@ const DashboardPage = () => {
                     <Card>
                         <CardContent>
                             <Typography variant="subtitle1" color="textSecondary">Empréstimos Ativos</Typography>
-                            <Typography variant="h4">{dashboardData?.activeLoans || 0}</Typography>
+                            <Typography variant="h4">{dashboardData.activeLoans}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -122,8 +107,8 @@ const DashboardPage = () => {
                     <Card>
                         <CardContent>
                             <Typography variant="subtitle1" color="textSecondary">Empréstimos em Atraso</Typography>
-                            <Typography variant="h4">{dashboardData?.overdueLoans || 0}</Typography>
-                            { (dashboardData?.overdueLoans || 0) > 0 &&
+                            <Typography variant="h4">{dashboardData.overdueLoans}</Typography>
+                            { dashboardData.overdueLoans > 0 &&
                                 <Typography variant="body2" color="error">
                                     Atenção necessária
                                 </Typography>
@@ -136,7 +121,7 @@ const DashboardPage = () => {
                     <Card>
                         <CardContent>
                             <Typography variant="subtitle1" color="textSecondary">Usuários Cadastrados</Typography>
-                            <Typography variant="h4">{dashboardData?.totalUsers || 0}</Typography>
+                            <Typography variant="h4">{dashboardData.totalUsers}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -151,7 +136,7 @@ const DashboardPage = () => {
                             Categorias Mais Emprestadas
                         </Typography>
                         <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={categories}>
+                            <BarChart data={dashboardData.mostBorrowedCategories}>
                                 <XAxis dataKey="category" />
                                 <YAxis />
                                 <Tooltip />
@@ -199,8 +184,8 @@ const DashboardPage = () => {
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
 
-                {activities.length > 0 ? (
-                    activities.map((activity, index) => (
+                {dashboardData.recentActivities.length > 0 ? (
+                    dashboardData.recentActivities.map((activity, index) => (
                         <Box key={activity.id} sx={{ mb: 2 }}>
                             <Grid container spacing={2}>
                                 <Grid size={{ xs: 12, sm: 3, md: 2 }}>
@@ -217,7 +202,7 @@ const DashboardPage = () => {
                                     </Typography>
                                 </Grid>
                             </Grid>
-                            {index < activities.length - 1 && <Divider sx={{ my: 1 }} />}
+                            {index < dashboardData.recentActivities.length - 1 && <Divider sx={{ my: 1 }} />}
                         </Box>
                     ))
                 ) : (

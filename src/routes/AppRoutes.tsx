@@ -14,7 +14,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 
 // Páginas protegidas
 import DashboardPage from '../pages/dashboard/DashboardPage';
-import BooksPage from '../pages/books/BooksPage';
+import BookListPage from '../pages/books/BookListPage';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -29,7 +29,7 @@ const AppRoutes: React.FC = () => {
             <Route element={<ProtectedRoute />}>
                 <Route element={<MainLayout />}>
                     <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/books" element={<BooksPage />} />
+                    <Route path="/books" element={<BookListPage />} />
                     {/* Mais rotas serão adicionadas aqui conforme desenvolvemos */}
                 </Route>
             </Route>
