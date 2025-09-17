@@ -18,7 +18,8 @@ import BookListPage from '../pages/books/BookListPage';
 import BookFormPage from '../pages/books/BookFormPage';
 import AuthorListPage from '../pages/authors/AuthorListPage';
 import AuthorFormPage from '../pages/authors/AuthorFormPage';
-
+import CategoryListPage from '../pages/categories/CategoryListPage';
+import CategoryFormPage from '../pages/categories/CategoryFormPage';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -39,6 +40,9 @@ const AppRoutes: React.FC = () => {
                     <Route path="/authors" element={<AuthorListPage />} />
                     <Route path="/authors/new" element={<AuthorFormPage />} />
                     <Route path="/authors/:id/edit" element={<AuthorFormPage />} />
+                    <Route path="/categories" element={<CategoryListPage />} />
+                    <Route path="/categories/new" element={<CategoryFormPage />} />
+                    <Route path="/categories/:id/edit" element={<CategoryFormPage />} />
                 </Route>
             </Route>
 
