@@ -20,6 +20,10 @@ import AuthorListPage from '../pages/authors/AuthorListPage';
 import AuthorFormPage from '../pages/authors/AuthorFormPage';
 import CategoryListPage from '../pages/categories/CategoryListPage';
 import CategoryFormPage from '../pages/categories/CategoryFormPage';
+import UserListPage from '../pages/users/UserListPage';
+import UserFormPage from '../pages/users/UserFormPage';
+import LoanListPage from '../pages/loans/LoanListPage';
+import LoanFormPage from '../pages/loans/LoanFormPage';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -43,6 +47,12 @@ const AppRoutes: React.FC = () => {
                     <Route path="/categories" element={<CategoryListPage />} />
                     <Route path="/categories/new" element={<CategoryFormPage />} />
                     <Route path="/categories/:id/edit" element={<CategoryFormPage />} />
+                    <Route path="/users" element={<UserListPage />} />
+                    <Route path="/users/new" element={<UserFormPage />} />
+                    <Route path="/users/:id/edit" element={<UserFormPage />} />
+                    <Route path="/loans" element={<LoanListPage />} />
+                    <Route path="/loans/new" element={<LoanFormPage />} />
+                    <Route path="/loans/:id/edit" element={<LoanFormPage />} />
                 </Route>
             </Route>
 
