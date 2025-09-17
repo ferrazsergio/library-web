@@ -3,6 +3,6 @@ import { DashboardDataDTO } from '../types/dashboard';
 
 // Busca todos os dados do dashboard (cards, categorias mais emprestadas, atividades recentes)
 export const fetchDashboardData = async (): Promise<DashboardDataDTO> => {
-    const response = await api.get('/api/v1/dashboard');
+    const response = await api.get('/dashboard');
     return response.data;
 };

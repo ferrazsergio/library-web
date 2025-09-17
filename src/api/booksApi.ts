@@ -3,8 +3,9 @@ import { BookDTO } from '../types/book';
 
 export const fetchBooks = async (): Promise<BookDTO[]> => {
     const { data } = await api.get('/books');
-    return data;
+    return data.content ?? [];
 };
+
 
 export const fetchBookById = async (id: number): Promise<BookDTO> => {
     const { data } = await api.get(`/books/${id}`);

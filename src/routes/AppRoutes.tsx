@@ -8,11 +8,11 @@ import MainLayout from '../components/layout/MainLayout';
 // Páginas públicas
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
-import HomePage from '../pages/HomePage';
 import ForbiddenPage from '../pages/ForbiddenPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
 // Páginas protegidas
+import HomePage from '../pages/HomePage';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import BookListPage from '../pages/books/BookListPage';
 import BookFormPage from '../pages/books/BookFormPage';
@@ -24,12 +24,12 @@ import UserListPage from '../pages/users/UserListPage';
 import UserFormPage from '../pages/users/UserFormPage';
 import LoanListPage from '../pages/loans/LoanListPage';
 import LoanFormPage from '../pages/loans/LoanFormPage';
+import ProfilePage from '../pages/profiles/ProfilePage';
 
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
             {/* Rotas públicas */}
-            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />
@@ -37,6 +37,7 @@ const AppRoutes: React.FC = () => {
             {/* Rotas protegidas dentro do layout principal */}
             <Route element={<ProtectedRoute />}>
                 <Route element={<MainLayout />}>
+                    <Route path="/" element={<HomePage />} />
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/books" element={<BookListPage />} />
                     <Route path="/books/new" element={<BookFormPage />} />
@@ -53,6 +54,7 @@ const AppRoutes: React.FC = () => {
                     <Route path="/loans" element={<LoanListPage />} />
                     <Route path="/loans/new" element={<LoanFormPage />} />
                     <Route path="/loans/:id/edit" element={<LoanFormPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
                 </Route>
             </Route>
 

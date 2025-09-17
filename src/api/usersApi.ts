@@ -24,3 +24,8 @@ export const updateUser = async (id: number, user: Partial<UserDTO>): Promise<Us
 export const deleteUser = async (id: number): Promise<void> => {
     await api.delete(`/users/${id}`);
 };
+
+export const fetchMe = async (): Promise<UserDTO> => {
+    const { data } = await api.get('/users/me');
+    return data;
+};

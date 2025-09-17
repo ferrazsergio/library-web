@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -85,6 +85,12 @@ const LoginPage: React.FC = () => {
                 >
                     Entrar
                 </Button>
+                <Typography align="center" sx={{ mt: 2 }}>
+                    Não tem uma conta?{' '}
+                    <Link to="/register" style={{ textDecoration: 'none', color: '#1976d2' }}>
+                        Registre-se
+                    </Link>
+                </Typography>
             </Box>
         </Box>
     );

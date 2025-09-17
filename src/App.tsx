@@ -5,7 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { SnackbarProvider } from 'notistack';
 import { AuthProvider } from './contexts/AuthContext';
-import AppRoutes from '.routes/AppRoutes';
+import AppRoutes from './routes/AppRoutes';
 import theme from './theme';
 
 // Configuração do React Query

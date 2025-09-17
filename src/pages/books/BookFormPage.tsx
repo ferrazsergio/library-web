@@ -3,18 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Paper, CircularProgress, MenuItem, Grid } from '@mui/material';
 import { fetchBookById, createBook, updateBook } from '../../api/booksApi';
 import { BookDTO, AuthorDTO, CategoryDTO } from '../../types/book';
-
-// MOCKS para autores e categorias (substitua pelos fetches reais depois)
-const mockAuthors: AuthorDTO[] = [
-    { id: 1, name: 'Autor 1' },
-    { id: 2, name: 'Autor 2' },
-    { id: 3, name: 'Autor 3' }
-];
-const mockCategories: CategoryDTO[] = [
-    { id: 1, name: 'Romance' },
-    { id: 2, name: 'Aventura' },
-    { id: 3, name: 'Terror' }
-];
+import api from '../../api/api';
 
 const BookFormPage: React.FC = () => {
     const { id } = useParams();
@@ -36,13 +25,29 @@ const BookFormPage: React.FC = () => {
     const [categories, setCategories] = useState<CategoryDTO[]>([]);
 
     useEffect(() => {
-        setAuthors(mockAuthors);
-        setCategories(mockCategories);
+        // Buscar autores reais da API
+        api.get('/authors', { params: { size: 100 } })
+            .then(res => {
+                console.log('Autores recebidos:', res.data.content || res.data); // Debug
+                setAuthors(res.data.content || res.data);
+            })
+            .catch(() => setError('Erro ao carregar autores.'));
+
+        // Buscar categorias reais da API
+        api.get('/categories', { params: { size: 100 } })
+            .then(res => {
+                console.log('Categorias recebidas:', res.data.content || res.data); // Debug
+                setCategories(res.data.content || res.data);
+            })
+            .catch(() => setError('Erro ao carregar categorias.'));
+
+        // Carregar livro se for edição
         const load = async () => {
             setLoading(true);
             try {
                 if (isEdit && id) {
                     const data = await fetchBookById(Number(id));
+                    console.log('Livro carregado:', data); // Debug
                     setBook({
                         ...data,
                         authorIds: data.authors?.map(a => a.id) || [],
@@ -134,7 +139,9 @@ const BookFormPage: React.FC = () => {
                                 SelectProps={{ multiple: true }}
                             >
                                 {authors.map(a => (
-                                    <MenuItem value={a.id} key={a.id}>{a.name}</MenuItem>
+                                    <MenuItem value={a.id} key={a.id}>
+                                        {a.name}
+                                    </MenuItem>
                                 ))}
                             </TextField>
                         </Grid>

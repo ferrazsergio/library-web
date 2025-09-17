@@ -5,6 +5,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import BookIcon from '@mui/icons-material/Book';
 import PeopleIcon from '@mui/icons-material/People';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import PersonIcon from '@mui/icons-material/Person';
+import CategoryIcon from '@mui/icons-material/Category';
 
 function SidebarItems() {
     return (
@@ -17,7 +19,6 @@ function SidebarItems() {
                     <ListItemText primary="Dashboard" />
                 </ListItemButton>
             </ListItem>
-
             <ListItem disablePadding>
                 <ListItemButton component={Link} to="/books">
                     <ListItemIcon>
@@ -26,7 +27,22 @@ function SidebarItems() {
                     <ListItemText primary="Livros" />
                 </ListItemButton>
             </ListItem>
-
+            <ListItem disablePadding>
+                <ListItemButton component={Link} to="/authors">
+                    <ListItemIcon>
+                        <PersonIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Autores" />
+                </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+                <ListItemButton component={Link} to="/categories">
+                    <ListItemIcon>
+                        <CategoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Categorias" />
+                </ListItemButton>
+            </ListItem>
             <ListItem disablePadding>
                 <ListItemButton component={Link} to="/loans">
                     <ListItemIcon>
@@ -35,7 +51,6 @@ function SidebarItems() {
                     <ListItemText primary="Empréstimos" />
                 </ListItemButton>
             </ListItem>
-
             <ListItem disablePadding>
                 <ListItemButton component={Link} to="/users">
                     <ListItemIcon>
