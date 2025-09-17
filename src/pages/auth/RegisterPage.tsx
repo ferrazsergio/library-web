@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Paper, Typography, TextField, Button, Grid, Alert, MenuItem } from '@mui/material';
+import { Box, Paper, Typography, TextField, Button, Alert, MenuItem, Grid } from '@mui/material';
 import { register } from '../../api/authApi';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,7 +72,7 @@ const RegisterPage: React.FC = () => {
                 {error && <Alert severity="error">{error}</Alert>}
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={2} sx={{ mt: 1 }}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 label="Nome"
                                 name="name"
@@ -82,7 +82,7 @@ const RegisterPage: React.FC = () => {
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 label="E-mail"
                                 name="email"
@@ -93,7 +93,7 @@ const RegisterPage: React.FC = () => {
                                 type="email"
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 label="Senha"
                                 name="password"
@@ -104,7 +104,7 @@ const RegisterPage: React.FC = () => {
                                 type="password"
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 label="Telefone"
                                 name="phone"
@@ -113,7 +113,7 @@ const RegisterPage: React.FC = () => {
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 label="Endereço"
                                 name="address"
@@ -122,7 +122,7 @@ const RegisterPage: React.FC = () => {
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 select
                                 label="Tipo de Usuário"
@@ -138,8 +138,14 @@ const RegisterPage: React.FC = () => {
                                 ))}
                             </TextField>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Button type="submit" variant="contained" color="primary" fullWidth disabled={saving}>
+                        <Grid size={12}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                disabled={saving}
+                            >
                                 {saving ? 'Registrando...' : 'Registrar'}
                             </Button>
                         </Grid>

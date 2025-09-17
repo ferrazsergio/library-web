@@ -12,8 +12,8 @@ const LoanFormPage: React.FC = () => {
     const navigate = useNavigate();
 
     const [loan, setLoan] = useState<Partial<LoanDTO>>({
-        userId: '',
-        bookId: '',
+        userId: undefined,
+        bookId: undefined,
         loanDate: '',
         expectedReturnDate: '',
         returnDate: '',
@@ -57,7 +57,7 @@ const LoanFormPage: React.FC = () => {
         const { name, value } = e.target;
         setLoan(prev => ({
             ...prev,
-            [name]: value,
+            [name]: name === "userId" || name === "bookId" ? Number(value) : value,
         }));
     };
 
@@ -90,13 +90,13 @@ const LoanFormPage: React.FC = () => {
                 {error && <Typography color="error">{error}</Typography>}
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 select
                                 label="Usuário"
                                 name="userId"
                                 required
-                                value={loan.userId}
+                                value={loan.userId ?? ''}
                                 onChange={handleChange}
                                 fullWidth
                                 disabled={isEdit}
@@ -106,13 +106,13 @@ const LoanFormPage: React.FC = () => {
                                 ))}
                             </TextField>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 select
                                 label="Livro"
                                 name="bookId"
                                 required
-                                value={loan.bookId}
+                                value={loan.bookId ?? ''}
                                 onChange={handleChange}
                                 fullWidth
                                 disabled={isEdit}
@@ -122,7 +122,7 @@ const LoanFormPage: React.FC = () => {
                                 ))}
                             </TextField>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <TextField
                                 label="Data Empréstimo"
                                 name="loanDate"
@@ -131,10 +131,11 @@ const LoanFormPage: React.FC = () => {
                                 value={loan.loanDate}
                                 onChange={handleChange}
                                 fullWidth
-                                InputLabelProps={{ shrink: true }}
-                            />
+                                slotProps={{
+                                    inputLabel: { shrink: true },
+                                }}                            />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <TextField
                                 label="Previsão Devolução"
                                 name="expectedReturnDate"
@@ -143,10 +144,11 @@ const LoanFormPage: React.FC = () => {
                                 value={loan.expectedReturnDate}
                                 onChange={handleChange}
                                 fullWidth
-                                InputLabelProps={{ shrink: true }}
-                            />
+                                slotProps={{
+                                    inputLabel: { shrink: true },
+                                }}                            />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <TextField
                                 label="Data Devolução Real"
                                 name="returnDate"
@@ -154,10 +156,11 @@ const LoanFormPage: React.FC = () => {
                                 value={loan.returnDate || ''}
                                 onChange={handleChange}
                                 fullWidth
-                                InputLabelProps={{ shrink: true }}
-                            />
+                                slotProps={{
+                                    inputLabel: { shrink: true },
+                                }}                            />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <TextField
                                 select
                                 label="Status"
@@ -171,7 +174,7 @@ const LoanFormPage: React.FC = () => {
                                 <MenuItem value="OVERDUE">Atrasado</MenuItem>
                             </TextField>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <Button type="submit" variant="contained" color="primary" disabled={saving}>
                                 {saving ? 'Salvando...' : 'Salvar'}
                             </Button>

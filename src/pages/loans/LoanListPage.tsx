@@ -112,13 +112,145 @@ const LoanListPage: React.FC = () => {
         }
     };
 
+    let content: React.ReactNode;
+
+    if (loading) {
+        content = <CircularProgress />;
+    } else if (error) {
+        content = <Typography color="error">{error}</Typography>;
+    } else {
+        content = (
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Usuário</TableCell>
+                            <TableCell>Livro</TableCell>
+                            <TableCell>Data Empréstimo</TableCell>
+                            <TableCell>Previsão Devolução</TableCell>
+                            <TableCell>Data Devolução Real</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell>Multa</TableCell>
+                            <TableCell>Ações</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {loans.map((loan) => (
+                            <TableRow key={loan.id}>
+                                <TableCell>{loan.user?.name || loan.userId}</TableCell>
+                                <TableCell>{loan.book?.title || loan.bookId}</TableCell>
+                                <TableCell>
+                                    {loan.loanDate
+                                        ? new Date(loan.loanDate).toLocaleDateString()
+                                        : '-'}
+                                </TableCell>
+                                <TableCell>
+                                    {loan.expectedReturnDate
+                                        ? new Date(loan.expectedReturnDate).toLocaleDateString()
+                                        : '-'}
+                                </TableCell>
+                                <TableCell>
+                                    {loan.returnDate
+                                        ? new Date(loan.returnDate).toLocaleDateString()
+                                        : '-'}
+                                </TableCell>
+                                <TableCell>
+                                    <Chip
+                                        label={statusLabel(loan.status)}
+                                        color={statusColor(loan.status)}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    {loan.fine ? (
+                                        <Chip
+                                            label={`R$ ${loan.fine.amount.toFixed(2)}${
+                                                loan.fine.paid ? ' (paga)' : ''
+                                            }`}
+                                            color={loan.fine.paid ? 'success' : 'error'}
+                                            size="small"
+                                        />
+                                    ) : (
+                                        '-'
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    <Tooltip title="Editar">
+                  <span>
+                    <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => navigate(`/loans/${loan.id}/edit`)}
+                        disabled={actionLoadingId === loan.id}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </span>
+                                    </Tooltip>
+                                    <Tooltip title="Devolver" placement="top">
+                  <span>
+                    <IconButton
+                        size="small"
+                        color="secondary"
+                        onClick={() => handleReturn(loan.id)}
+                        disabled={
+                            loan.status !== 'ACTIVE' ||
+                            actionLoadingId === loan.id
+                        }
+                    >
+                      <AssignmentReturnIcon />
+                    </IconButton>
+                  </span>
+                                    </Tooltip>
+                                    <Tooltip title="Renovar" placement="top">
+                  <span>
+                    <IconButton
+                        size="small"
+                        color="info"
+                        onClick={() => handleRenew(loan.id)}
+                        disabled={
+                            loan.status !== 'ACTIVE' ||
+                            actionLoadingId === loan.id
+                        }
+                    >
+                      <AutorenewIcon />
+                    </IconButton>
+                  </span>
+                                    </Tooltip>
+                                    <Tooltip title="Excluir">
+                  <span>
+                    <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleDelete(loan.id)}
+                        disabled={actionLoadingId === loan.id}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </span>
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                        {loans.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={8} align="center">
+                                    Nenhum empréstimo encontrado.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    }
+
     return (
         <Box sx={{ p: 3 }}>
             <Typography variant="h4" gutterBottom>
                 Empréstimos
             </Typography>
             <Grid container spacing={2} sx={{ mb: 2 }}>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -129,133 +261,7 @@ const LoanListPage: React.FC = () => {
                     </Button>
                 </Grid>
             </Grid>
-            {loading ? (
-                <CircularProgress />
-            ) : error ? (
-                <Typography color="error">{error}</Typography>
-            ) : (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Usuário</TableCell>
-                                <TableCell>Livro</TableCell>
-                                <TableCell>Data Empréstimo</TableCell>
-                                <TableCell>Previsão Devolução</TableCell>
-                                <TableCell>Data Devolução Real</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Multa</TableCell>
-                                <TableCell>Ações</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {loans.map((loan) => (
-                                <TableRow key={loan.id}>
-                                    <TableCell>{loan.user?.name || loan.userId}</TableCell>
-                                    <TableCell>{loan.book?.title || loan.bookId}</TableCell>
-                                    <TableCell>
-                                        {loan.loanDate
-                                            ? new Date(loan.loanDate).toLocaleDateString()
-                                            : '-'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {loan.expectedReturnDate
-                                            ? new Date(loan.expectedReturnDate).toLocaleDateString()
-                                            : '-'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {loan.returnDate
-                                            ? new Date(loan.returnDate).toLocaleDateString()
-                                            : '-'}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Chip
-                                            label={statusLabel(loan.status)}
-                                            color={statusColor(loan.status)}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        {loan.fine ? (
-                                            <Chip
-                                                label={`R$ ${loan.fine.amount.toFixed(2)}${
-                                                    loan.fine.paid ? ' (paga)' : ''
-                                                }`}
-                                                color={loan.fine.paid ? 'success' : 'error'}
-                                                size="small"
-                                            />
-                                        ) : (
-                                            '-'
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Tooltip title="Editar">
-                      <span>
-                        <IconButton
-                            size="small"
-                            color="primary"
-                            onClick={() => navigate(`/loans/${loan.id}/edit`)}
-                            disabled={actionLoadingId === loan.id}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </span>
-                                        </Tooltip>
-                                        <Tooltip title="Devolver" placement="top">
-                      <span>
-                        <IconButton
-                            size="small"
-                            color="secondary"
-                            onClick={() => handleReturn(loan.id)}
-                            disabled={
-                                loan.status !== 'ACTIVE' ||
-                                actionLoadingId === loan.id
-                            }
-                        >
-                          <AssignmentReturnIcon />
-                        </IconButton>
-                      </span>
-                                        </Tooltip>
-                                        <Tooltip title="Renovar" placement="top">
-                      <span>
-                        <IconButton
-                            size="small"
-                            color="info"
-                            onClick={() => handleRenew(loan.id)}
-                            disabled={
-                                loan.status !== 'ACTIVE' ||
-                                actionLoadingId === loan.id
-                            }
-                        >
-                          <AutorenewIcon />
-                        </IconButton>
-                      </span>
-                                        </Tooltip>
-                                        <Tooltip title="Excluir">
-                      <span>
-                        <IconButton
-                            size="small"
-                            color="error"
-                            onClick={() => handleDelete(loan.id)}
-                            disabled={actionLoadingId === loan.id}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </span>
-                                        </Tooltip>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                            {loans.length === 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={8} align="center">
-                                        Nenhum empréstimo encontrado.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
+            {content}
         </Box>
     );
 };
