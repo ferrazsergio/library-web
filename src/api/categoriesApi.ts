@@ -3,7 +3,7 @@ import { CategoryDTO } from '../types/category';
 
 export const fetchCategories = async (): Promise<CategoryDTO[]> => {
     const { data } = await api.get('/categories');
-    return data;
+    return data.content ?? [];
 };
 
 export const fetchCategoryById = async (id: number): Promise<CategoryDTO> => {

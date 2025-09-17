@@ -2,8 +2,8 @@ import api from './api';
 import { AuthorDTO } from '../types/author';
 
 export const fetchAuthors = async (): Promise<AuthorDTO[]> => {
-    const { data } = await api.get('/authors');
-    return data;
+    const { data } = await api.get('/authors', { params: { size: 100 } }); // Adicione size se quiser limitar
+    return data.content || [];
 };
 
 export const fetchAuthorById = async (id: number): Promise<AuthorDTO> => {

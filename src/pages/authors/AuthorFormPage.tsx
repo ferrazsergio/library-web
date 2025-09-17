@@ -11,7 +11,8 @@ const AuthorFormPage: React.FC = () => {
 
     const [author, setAuthor] = useState<Partial<AuthorDTO>>({
         name: '',
-        bio: '',
+        biography: '',
+        birthDate: '',
     });
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -23,7 +24,10 @@ const AuthorFormPage: React.FC = () => {
             try {
                 if (isEdit && id) {
                     const data = await fetchAuthorById(Number(id));
-                    setAuthor(data);
+                    setAuthor({
+                        ...data,
+                        birthDate: data.birthDate ? String(data.birthDate) : '',
+                    });
                 }
             } catch {
                 setError('Erro ao carregar dados do autor.');
@@ -83,12 +87,23 @@ const AuthorFormPage: React.FC = () => {
                         <Grid size={{ xs: 12 }}>
                             <TextField
                                 label="Biografia"
-                                name="bio"
-                                value={author.bio}
+                                name="biography"
+                                value={author.biography}
                                 onChange={handleChange}
                                 fullWidth
                                 multiline
                                 minRows={3}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12 }}>
+                            <TextField
+                                label="Data de Nascimento"
+                                name="birthDate"
+                                type="date"
+                                value={author.birthDate || ''}
+                                onChange={handleChange}
+                                fullWidth
+                                InputLabelProps={{ shrink: true }}
                             />
                         </Grid>
                         <Grid size={{ xs: 12 }}>

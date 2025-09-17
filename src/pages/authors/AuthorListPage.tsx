@@ -63,6 +63,7 @@ const AuthorListPage: React.FC = () => {
                         <TableRow>
                             <TableCell>Nome</TableCell>
                             <TableCell>Biografia</TableCell>
+                            <TableCell>Data de Nascimento</TableCell>
                             <TableCell>Ações</TableCell>
                         </TableRow>
                     </TableHead>
@@ -70,7 +71,8 @@ const AuthorListPage: React.FC = () => {
                         {authors.map(author => (
                             <TableRow key={author.id}>
                                 <TableCell>{author.name}</TableCell>
-                                <TableCell>{author.bio}</TableCell>
+                                <TableCell>{author.biography}</TableCell>
+                                <TableCell>{author.birthDate || ''}</TableCell>
                                 <TableCell>
                                     <IconButton
                                         size="small"
