@@ -1,6 +1,8 @@
 export interface AuthorDTO {
     id: number;
     name: string;
+    biography?: string;
+    birthDate?: string; 
 }
 
 export interface CategoryDTO {
@@ -9,7 +11,7 @@ export interface CategoryDTO {
 }
 
 export interface BookDTO {
-    id: number;
+    id?: number;
     isbn: string;
     title: string;
     description?: string;
@@ -17,7 +19,7 @@ export interface BookDTO {
     availableQuantity: number;
     totalQuantity: number;
     authorIds: number[];
-    categoryId: number;
+    categoryId?: number;
     publisher?: string;
     authors?: AuthorDTO[];
     category?: CategoryDTO;

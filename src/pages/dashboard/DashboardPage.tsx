@@ -198,7 +198,7 @@ const DashboardPage = () => {
                                         {activity.description}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary">
-                                        {`${activity.userName} - ${activity.bookTitle}`}
+                                        {[activity.userName, activity.bookTitle].filter(Boolean).join(" - ")}
                                     </Typography>
                                 </Grid>
                             </Grid>

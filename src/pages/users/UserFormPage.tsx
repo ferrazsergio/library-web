@@ -12,12 +12,26 @@ const UserFormPage: React.FC = () => {
     const [user, setUser] = useState<Partial<UserDTO>>({
         name: '',
         email: '',
-        role: 'user',
-        status: 'active',
+        role: 'reader',     // ou "user", conforme seus enums
+        status: 'active',   // minúsculo para exibição, mas converta ao enviar
     });
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
+
+    // Normaliza role e status vindos da API para exibição no select
+    const normalizeUserData = (userData: any) => ({
+        ...userData,
+        role: userData.role ? userData.role.toLowerCase() : 'reader',
+        status: userData.status ? userData.status.toLowerCase() : 'active',
+    });
+
+    // Prepara dados para API (enum maiúsculo)
+    const prepareForApi = (userData: any) => ({
+        ...userData,
+        role: userData.role ? userData.role.toUpperCase() : 'READER',
+        status: userData.status ? userData.status.toUpperCase() : 'ACTIVE',
+    });
 
     useEffect(() => {
         const load = async () => {
@@ -25,7 +39,7 @@ const UserFormPage: React.FC = () => {
             try {
                 if (isEdit && id) {
                     const data = await fetchUserById(Number(id));
-                    setUser(data);
+                    setUser(normalizeUserData(data));
                 }
             } catch {
                 setError('Erro ao carregar dados do usuário.');
@@ -37,9 +51,10 @@ const UserFormPage: React.FC = () => {
     }, [id, isEdit]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
         setUser(prev => ({
             ...prev,
-            [e.target.name]: e.target.value,
+            [name]: value,
         }));
     };
 
@@ -47,14 +62,16 @@ const UserFormPage: React.FC = () => {
         e.preventDefault();
         setSaving(true);
         setError('');
+
         try {
+            const dataToSend = prepareForApi(user);
             if (isEdit && id) {
-                await updateUser(Number(id), user);
+                await updateUser(Number(id), dataToSend);
             } else {
-                await createUser(user);
+                await createUser(dataToSend);
             }
             navigate('/users');
-        } catch {
+        } catch (error) {
             setError('Erro ao salvar usuário.');
         } finally {
             setSaving(false);
@@ -77,7 +94,7 @@ const UserFormPage: React.FC = () => {
                                 label="Nome"
                                 name="name"
                                 required
-                                value={user.name}
+                                value={user.name || ''}
                                 onChange={handleChange}
                                 fullWidth
                             />
@@ -87,23 +104,37 @@ const UserFormPage: React.FC = () => {
                                 label="Email"
                                 name="email"
                                 required
-                                value={user.email}
+                                value={user.email || ''}
                                 onChange={handleChange}
                                 fullWidth
                                 type="email"
                             />
                         </Grid>
                         <Grid size={{ xs: 12 }}>
+                            {!isEdit && (
+                                <TextField
+                                    label="Senha"
+                                    name="password"
+                                    type="password"
+                                    required
+                                    value={user.password || ''}
+                                    onChange={handleChange}
+                                    fullWidth
+                                />
+                            )}
+                        </Grid>
+                        <Grid size={{ xs: 12 }}>
                             <TextField
                                 select
                                 label="Papel"
                                 name="role"
-                                value={user.role}
+                                value={user.role || 'reader'}
                                 onChange={handleChange}
                                 fullWidth
                             >
-                                <MenuItem value="user">Usuário</MenuItem>
                                 <MenuItem value="admin">Admin</MenuItem>
+                                <MenuItem value="librarian">Bibliotecário</MenuItem>
+                                <MenuItem value="reader">Leitor</MenuItem>
                             </TextField>
                         </Grid>
                         <Grid size={{ xs: 12 }}>
@@ -111,7 +142,7 @@ const UserFormPage: React.FC = () => {
                                 select
                                 label="Status"
                                 name="status"
-                                value={user.status}
+                                value={user.status || 'active'}
                                 onChange={handleChange}
                                 fullWidth
                             >

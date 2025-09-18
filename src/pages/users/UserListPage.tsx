@@ -12,6 +12,31 @@ const UserListPage: React.FC = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    const getRoleLabel = (role: string) => {
+        switch (role?.toLowerCase()) {
+            case 'admin':
+                return 'Administrador';
+            case 'librarian':
+                return 'Bibliotecário';
+            case 'reader':
+                return 'Leitor';
+            default:
+                return 'Usuário';
+        }
+    };
+    const getRoleColor = (role: string) => {
+        switch (role?.toLowerCase()) {
+            case 'admin':
+                return 'secondary';
+            case 'librarian':
+                return 'primary';
+            case 'reader':
+                return 'default';
+            default:
+                return 'default';
+        }
+    };
+
     const loadUsers = async () => {
         try {
             setLoading(true);
@@ -38,6 +63,63 @@ const UserListPage: React.FC = () => {
         }
     };
 
+    let content;
+    if (loading) {
+        content = <CircularProgress />;
+    } else if (error) {
+        content = <Typography color="error">{error}</Typography>;
+    } else {
+        content = (
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Nome</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Papel</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell>Ações</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {users.map(user => {
+                            const normalizedStatus = user.status?.toLowerCase();
+                            const statusLabel = normalizedStatus === 'active' ? 'Ativo' : 'Inativo';
+                            const statusColor = normalizedStatus === 'active' ? 'success' : 'default';
+
+                            return (
+                                <TableRow key={user.id}>
+                                    <TableCell>{user.name}</TableCell>
+                                    <TableCell>{user.email}</TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={getRoleLabel(user.role)}
+                                            color={getRoleColor(user.role) as 'default' | 'primary' | 'secondary'}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={statusLabel}
+                                            color={statusColor}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton size="small" color="primary" onClick={() => navigate(`/users/${user.id}/edit`)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton size="small" color="error" onClick={() => user.id !== undefined && handleDelete(user.id)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    }
+
     return (
         <Box sx={{ p: 3 }}>
             <Typography variant="h4" gutterBottom>
@@ -50,47 +132,7 @@ const UserListPage: React.FC = () => {
                     </Button>
                 </Grid>
             </Grid>
-            {loading ? (
-                <CircularProgress />
-            ) : error ? (
-                <Typography color="error">{error}</Typography>
-            ) : (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Nome</TableCell>
-                                <TableCell>Email</TableCell>
-                                <TableCell>Papel</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Ações</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {users.map(user => (
-                                <TableRow key={user.id}>
-                                    <TableCell>{user.name}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>
-                                        <Chip label={user.role === 'admin' ? 'Admin' : 'Usuário'} color={user.role === 'admin' ? 'secondary' : 'default'} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Chip label={user.status === 'active' ? 'Ativo' : 'Inativo'} color={user.status === 'active' ? 'success' : 'default'} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <IconButton size="small" color="primary" onClick={() => navigate(`/users/${user.id}/edit`)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton size="small" color="error" onClick={() => handleDelete(user.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
+            {content}
         </Box>
     );
 };

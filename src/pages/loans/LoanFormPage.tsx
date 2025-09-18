@@ -30,9 +30,14 @@ const LoanFormPage: React.FC = () => {
             setLoading(true);
             try {
                 const [usersData, booksData] = await Promise.all([fetchUsers(), fetchBooks()]);
-                setUsers(usersData.map(u => ({ id: u.id, name: u.name })));
-                setBooks(booksData.map(b => ({ id: b.id, title: b.title })));
-                if (isEdit && id) {
+                setUsers(
+                    usersData
+                        .filter(u => u.id !== undefined)
+                        .map(u => ({ id: u.id as number, name: u.name }))
+                );                setBooks(booksData
+                    .filter(b => b.id !== undefined)
+                    .map(b => ({ id: b.id as number, title: b.title }))
+                );                if (isEdit && id) {
                     const data = await fetchLoanById(Number(id));
                     setLoan({
                         ...data,

@@ -66,12 +66,14 @@ const BookListPage: React.FC = () => {
                                 <TableCell>{book.category?.name}</TableCell>
                                 <TableCell>{book.availableQuantity}</TableCell>
                                 <TableCell>
-                                    <IconButton size="small" color="primary" onClick={() => navigate(`/books/${book.id}/edit`)}>
+                                    <IconButton size="small" color="primary" onClick={() => book.id !== undefined && navigate(`/books/${book.id}/edit`)}>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton size="small" color="error" onClick={() => handleDelete(book.id)}>
-                                        <DeleteIcon />
-                                    </IconButton>
+                                    {book.id !== undefined && (
+                                        <IconButton size="small" color="error" onClick={() => handleDelete(book.id!)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}

@@ -16,6 +16,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import SidebarItems from '../SidebarItems';
 import UserMenu from './UserMenu';
+import ColorModeToggle from './ColorModeToggle'; // <-- Importação adicionada
 
 const drawerWidth = 240;
 
@@ -65,6 +66,7 @@ const MainLayout: React.FC = () => {
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                         Sistema de Biblioteca
                     </Typography>
+                    <ColorModeToggle /> {/* <-- Toggle adicionado aqui */}
                     <UserMenu />
                 </Toolbar>
             </AppBar>

@@ -64,18 +64,18 @@ const BookFormPage: React.FC = () => {
     }, [id, isEdit]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
         setBook(prev => ({
             ...prev,
-            [e.target.name]: e.target.value,
+            [name]: name === 'categoryId' ? Number(value) : value,
         }));
     };
 
     const handleAuthorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const select = e.target as unknown as HTMLSelectElement;
-        const value = Array.from(select.selectedOptions, (option) => Number(option.value));
+        const value = e.target.value;
         setBook((prev) => ({
             ...prev,
-            authorIds: value,
+            authorIds: Array.isArray(value) ? value.map(Number) : [],
         }));
     };
 
@@ -151,7 +151,7 @@ const BookFormPage: React.FC = () => {
                                 select
                                 label="Categoria"
                                 name="categoryId"
-                                value={book.categoryId}
+                                value={book.categoryId || ''}
                                 onChange={handleChange}
                                 fullWidth
                             >

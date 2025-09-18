@@ -1,11 +1,12 @@
 export interface UserDTO {
-    id: number;
+    id?: number; // pode não existir na criação
     name: string;
     email: string;
+    password?: string;
     phone?: string;
     address?: string;
-    role: 'admin' | 'user'; // ou string, se backend enviar outros valores
-    status: 'active' | 'inactive'; // se existir esse campo no backend
+    role: 'admin' | 'librarian' | 'reader';
+    status: 'active' | 'inactive';
     createdAt?: string;
     updatedAt?: string;
 }
