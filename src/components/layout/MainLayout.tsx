@@ -16,7 +16,8 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import SidebarItems from '../SidebarItems';
 import UserMenu from './UserMenu';
-import ColorModeToggle from './ColorModeToggle'; // <-- Importação adicionada
+import ColorModeToggle from './ColorModeToggle';
+import PageTransition from './PageTransition'; // Importação adicionada
 
 const drawerWidth = 240;
 
@@ -66,7 +67,7 @@ const MainLayout: React.FC = () => {
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                         Sistema de Biblioteca
                     </Typography>
-                    <ColorModeToggle /> {/* <-- Toggle adicionado aqui */}
+                    <ColorModeToggle />
                     <UserMenu />
                 </Toolbar>
             </AppBar>
@@ -81,7 +82,7 @@ const MainLayout: React.FC = () => {
                     open={isMobile ? mobileOpen : true}
                     onClose={handleDrawerToggle}
                     ModalProps={{
-                        keepMounted: true, // Melhor desempenho em dispositivos móveis
+                        keepMounted: true,
                     }}
                     sx={{
                         '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
@@ -100,7 +101,9 @@ const MainLayout: React.FC = () => {
                     mt: '64px',
                 }}
             >
-                <Outlet />
+                <PageTransition>
+                    <Outlet />
+                </PageTransition>
             </Box>
         </Box>
     );
