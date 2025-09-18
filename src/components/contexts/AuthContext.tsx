@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import api from '../api/api';
-import { User } from '../types';
+import api from '../../api/api';
+import { User } from '../../types';
 
 interface DecodedToken {
     sub: string;
@@ -23,34 +23,53 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+    const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
 
+    // Sincronização com múltiplas abas (login/logout)
     useEffect(() => {
-        // Ao iniciar, se houver um token no state, valida-o e carrega o usuário.
-        if (token) {
-            try {
-                const decoded = jwtDecode<DecodedToken>(token);
-                if (decoded.exp * 1000 < Date.now()) {
-                    logout();
-                    return;
-                }
-                // Busca o usuário do localStorage
-                const storedUser = localStorage.getItem('user');
-                if (storedUser) {
-                    setUser(JSON.parse(storedUser));
-                } else {
-                    // Se não tem user salvo, busca do backend
-                    fetchUser(token);
-                }
-            } catch (error) {
-                logout();
+        const syncAuth = (e: StorageEvent) => {
+            if (e.key === 'token') {
+                setToken(e.newValue);
             }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            if (e.key === 'user') {
+                setUser(e.newValue ? JSON.parse(e.newValue) : null);
+            }
+        };
+        window.addEventListener('storage', syncAuth);
+        return () => window.removeEventListener('storage', syncAuth);
     }, []);
 
-    // Função para buscar dados do usuário autenticado
-    const fetchUser = async (token: string) => {
+    // Logout se o token expirar (checa a cada load e a cada mudança do token)
+    useEffect(() => {
+        if (!token) {
+            setUser(null);
+            return;
+        }
+        try {
+            const decoded = jwtDecode<DecodedToken>(token);
+            if (decoded.exp * 1000 < Date.now()) {
+                logout();
+                return;
+            }
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+            } else {
+                fetchUser(token);
+            }
+            // Timer para logout automático ao expirar o token
+            const timeout = decoded.exp * 1000 - Date.now();
+            const timer = setTimeout(() => {
+                logout();
+            }, timeout);
+            return () => clearTimeout(timer);
+        } catch {
+            logout();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
+
+    const fetchUser = useCallback(async (token: string) => {
         try {
             const res = await api.get('/users/me', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -60,18 +79,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch (error) {
             logout();
         }
-    };
+    }, []);
 
     const login = async (email: string, password: string) => {
         try {
             const response = await api.post('/auth/login', { email, password });
             const { token } = response.data;
-
-            // Salva token
             setToken(token);
             localStorage.setItem('token', token);
-
-            // Busca dados do usuário autenticado no backend
             await fetchUser(token);
         } catch (error) {
             logout();
@@ -83,15 +98,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await api.post('/auth/register', { name, email, password });
     };
 
-    const logout = () => {
+    const logout = useCallback(() => {
         setUser(null);
         setToken(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-    };
+        // Opcional: redirecionar para login
+        // window.location.href = '/login?expired=1';
+    }, []);
 
-    const isAdmin = user?.role === 'ADMIN';
-    const isLibrarian = user?.role === 'LIBRARIAN' || isAdmin;
+    const isAdmin = user?.role?.toUpperCase() === 'ADMIN';
+    const isLibrarian = user?.role?.toUpperCase() === 'LIBRARIAN' || isAdmin;
     const isAuthenticated = !!user;
 
     return (

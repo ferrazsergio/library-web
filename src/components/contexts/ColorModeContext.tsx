@@ -1,12 +1,12 @@
 import React, { createContext, useMemo, useState, useContext } from "react";
-import { ThemeProvider, createTheme, PaletteMode } from "@mui/material";
-import lightTheme from "../theme/lightTheme";
-import darkTheme from "../theme/darkTheme";
+import { ThemeProvider, createTheme, PaletteMode, Theme } from "@mui/material";
+import lightTheme from "../../theme/lightTheme";
+import darkTheme from "../../theme/darkTheme";
 
 interface ColorModeContextProps {
     mode: PaletteMode;
     toggleColorMode: () => void;
-    theme: ReturnType<typeof createTheme>;
+    theme: Theme;
 }
 
 const ColorModeContext = createContext<ColorModeContextProps | undefined>(undefined);
@@ -16,7 +16,11 @@ export const ColorModeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const toggleColorMode = () => setMode((prev) => (prev === "light" ? "dark" : "light"));
 
-    const theme = useMemo(() => createTheme(mode === "light" ? lightTheme : darkTheme), [mode]);
+    // Use diretamente o objeto de tema, pois lightTheme/darkTheme já são temas prontos se você seguiu exemplos anteriores
+    const theme = useMemo(() =>
+            mode === "light" ? lightTheme : darkTheme,
+        [mode]
+    );
 
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode, theme }}>

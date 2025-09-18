@@ -1,48 +1,37 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import {
     AppBar,
     Box,
     CssBaseline,
-    Divider,
     Drawer,
     IconButton,
-    List,
     Toolbar,
     Typography,
-    useMediaQuery,
-    useTheme,
+    useTheme
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import SidebarItems from '../SidebarItems';
 import UserMenu from './UserMenu';
 import ColorModeToggle from './ColorModeToggle';
-import PageTransition from './PageTransition'; // Importação adicionada
+import AccessibilityFontButtons from '../AccessibilityFontButtons';
+import PageTransition from './PageTransition';
+import LibraryMenuCarousel from '../LibraryMenuCarousel';
 
-const drawerWidth = 240;
+const drawerWidth = 350;
 
 const MainLayout: React.FC = () => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const [mobileOpen, setMobileOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
+        setDrawerOpen((prev) => !prev);
     };
 
-    const drawer = (
-        <div>
-            <Toolbar>
-                <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                    Biblioteca
-                </Typography>
-            </Toolbar>
-            <Divider />
-            <List>
-                <SidebarItems />
-            </List>
-        </div>
-    );
+    const handleNavigate = (path: string) => {
+        navigate(path);
+        setDrawerOpen(false);
+    };
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -50,54 +39,41 @@ const MainLayout: React.FC = () => {
             <AppBar
                 position="fixed"
                 sx={{
-                    width: { md: `calc(100% - ${drawerWidth}px)` },
-                    ml: { md: `${drawerWidth}px` },
+                    width: '100%',
+                    ml: 0,
                 }}
             >
                 <Toolbar>
                     <IconButton
                         color="inherit"
-                        aria-label="open drawer"
+                        aria-label="abrir menu biblioteca"
                         edge="start"
                         onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { md: 'none' } }}
+                        sx={{ mr: 2 }}
                     >
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                         Sistema de Biblioteca
                     </Typography>
+                    <AccessibilityFontButtons />
                     <ColorModeToggle />
                     <UserMenu />
                 </Toolbar>
             </AppBar>
 
-            <Box
-                component="nav"
-                sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-                aria-label="menu items"
-            >
-                <Drawer
-                    variant={isMobile ? 'temporary' : 'permanent'}
-                    open={isMobile ? mobileOpen : true}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true,
-                    }}
-                    sx={{
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-            </Box>
+            <LibraryMenuCarousel
+                open={drawerOpen}
+                onClose={handleDrawerToggle}
+                onNavigate={handleNavigate}
+            />
 
             <Box
                 component="main"
                 sx={{
                     flexGrow: 1,
                     p: 3,
-                    width: { md: `calc(100% - ${drawerWidth}px)` },
+                    width: '100%',
                     mt: '64px',
                 }}
             >

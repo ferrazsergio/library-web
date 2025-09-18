@@ -12,25 +12,25 @@ const UserFormPage: React.FC = () => {
     const [user, setUser] = useState<Partial<UserDTO>>({
         name: '',
         email: '',
-        role: 'reader',     // ou "user", conforme seus enums
-        status: 'active',   // minúsculo para exibição, mas converta ao enviar
+        role: 'reader',
+        status: 'active',
     });
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
     // Normaliza role e status vindos da API para exibição no select
-    const normalizeUserData = (userData: any) => ({
+    const normalizeUserData = (userData: any): Partial<UserDTO> => ({
         ...userData,
         role: userData.role ? userData.role.toLowerCase() : 'reader',
         status: userData.status ? userData.status.toLowerCase() : 'active',
     });
 
-    // Prepara dados para API (enum maiúsculo)
-    const prepareForApi = (userData: any) => ({
+    // Prepara dados para API (enum minúsculo, conforme UserDTO)
+    const prepareForApi = (userData: any): Partial<UserDTO> => ({
         ...userData,
-        role: userData.role ? userData.role.toUpperCase() : 'READER',
-        status: userData.status ? userData.status.toUpperCase() : 'ACTIVE',
+        role: userData.role ? userData.role.toLowerCase() : 'reader',
+        status: userData.status ? userData.status.toLowerCase() : 'active',
     });
 
     useEffect(() => {
@@ -62,7 +62,6 @@ const UserFormPage: React.FC = () => {
         e.preventDefault();
         setSaving(true);
         setError('');
-
         try {
             const dataToSend = prepareForApi(user);
             if (isEdit && id) {

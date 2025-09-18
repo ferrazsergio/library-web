@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../components/contexts/AuthContext';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 // Variantes para animação stagger dos campos

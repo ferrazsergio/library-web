@@ -28,6 +28,7 @@ const HomePage: React.FC = () => {
                             variant="contained"
                             size="large"
                             onClick={() => navigate('/login')}
+                            fullWidth
                         >
                             Entrar
                         </Button>
@@ -35,6 +36,7 @@ const HomePage: React.FC = () => {
                             variant="outlined"
                             size="large"
                             onClick={() => navigate('/register')}
+                            fullWidth
                         >
                             Cadastrar
                         </Button>
