@@ -14,7 +14,6 @@ import {
     Paper,
     CircularProgress,
     IconButton,
-    Grid,
     Chip,
     Snackbar,
     Alert,
@@ -232,25 +231,21 @@ const UserListPage: React.FC = () => {
                 <Typography variant="h4" gutterBottom fontWeight={600}>
                     Usuários
                 </Typography>
-                <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <motion.div
-                            whileHover={{ scale: 1.04, boxShadow: '0 2px 16px #1976d233' }}
-                            whileTap={{ scale: 0.97 }}
-                        >
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                onClick={() => navigate('/users/new')}
-                                aria-label="Adicionar usuário"
-                                sx={{ fontWeight: 500, py: 1.1, fontSize: 17 }}
-                            >
-                                Adicionar Usuário
-                            </Button>
-                        </motion.div>
-                    </Grid>
-                </Grid>
+                <motion.div
+                    whileHover={{ scale: 1.04, boxShadow: '0 2px 16px #1976d233' }}
+                    whileTap={{ scale: 0.97 }}
+                    style={{ display: 'inline-block', marginBottom: 16 }}
+                >
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigate('/users/new')}
+                        aria-label="Adicionar usuário"
+                        sx={{ fontWeight: 500, py: 1.1, fontSize: 17 }}
+                    >
+                        Adicionar Usuário
+                    </Button>
+                </motion.div>
                 <AnimatePresence>
                     {success && (
                         <motion.div

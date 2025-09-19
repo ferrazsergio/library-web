@@ -20,7 +20,7 @@ const NotFoundPage: React.FC = () => {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate('/dashboard')}
                     sx={{ mt: 2 }}
                 >
                     Ir para página inicial

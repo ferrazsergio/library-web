@@ -9,4 +9,5 @@ export interface UserDTO {
     status: 'active' | 'inactive';
     createdAt?: string;
     updatedAt?: string;
+    avatarUrl?: string;
 }

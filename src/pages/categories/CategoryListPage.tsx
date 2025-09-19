@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchCategories, deleteCategory } from '../../api/categoriesApi';
 import { CategoryDTO } from '../../types/category';
-import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, IconButton, Grid, Tooltip, Alert } from '@mui/material';
+import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, IconButton, Tooltip, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
@@ -163,25 +163,21 @@ const CategoryListPage: React.FC = () => {
                 <Typography variant="h4" gutterBottom fontWeight={600}>
                     Categorias
                 </Typography>
-                <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <motion.div
-                            whileHover={{ scale: 1.04, boxShadow: '0 2px 16px #1976d233' }}
-                            whileTap={{ scale: 0.97 }}
-                        >
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                aria-label="Adicionar categoria"
-                                onClick={() => navigate('/categories/new')}
-                                sx={{ fontWeight: 500, py: 1.1, fontSize: 17 }}
-                            >
-                                Adicionar Categoria
-                            </Button>
-                        </motion.div>
-                    </Grid>
-                </Grid>
+                <motion.div
+                    whileHover={{ scale: 1.04, boxShadow: '0 2px 16px #1976d233' }}
+                    whileTap={{ scale: 0.97 }}
+                    style={{ display: 'inline-block', marginBottom: 16 }}
+                >
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        aria-label="Adicionar categoria"
+                        onClick={() => navigate('/categories/new')}
+                        sx={{ fontWeight: 500, py: 1.1, fontSize: 17 }}
+                    >
+                        Adicionar Categoria
+                    </Button>
+                </motion.div>
                 <AnimatePresence>
                     {success && (
                         <motion.div

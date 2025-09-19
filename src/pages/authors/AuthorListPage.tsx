@@ -13,7 +13,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
-import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Tooltip from '@mui/material/Tooltip';
@@ -181,25 +180,21 @@ const AuthorListPage: React.FC = () => {
                 <Typography variant="h4" gutterBottom fontWeight={600}>
                     Autores
                 </Typography>
-                <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <motion.div
-                            whileHover={{ scale: 1.04, boxShadow: '0 2px 16px #1976d233' }}
-                            whileTap={{ scale: 0.97 }}
-                        >
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                aria-label="Adicionar autor"
-                                onClick={() => navigate('/authors/new')}
-                                sx={{ fontWeight: 500, py: 1.1, fontSize: 17 }}
-                            >
-                                Adicionar Autor
-                            </Button>
-                        </motion.div>
-                    </Grid>
-                </Grid>
+                <motion.div
+                    whileHover={{ scale: 1.04, boxShadow: '0 2px 16px #1976d233' }}
+                    whileTap={{ scale: 0.97 }}
+                    style={{ display: 'inline-block', marginBottom: 16 }}
+                >
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        aria-label="Adicionar autor"
+                        onClick={() => navigate('/authors/new')}
+                        sx={{ fontWeight: 500, py: 1.1, fontSize: 17 }}
+                    >
+                        Adicionar Autor
+                    </Button>
+                </motion.div>
                 <AnimatePresence>
                     {success && (
                         <motion.div

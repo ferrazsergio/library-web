@@ -1,32 +1,26 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
     AppBar,
     Box,
     CssBaseline,
-    Drawer,
     IconButton,
     Toolbar,
     Typography,
-    useTheme
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import UserMenu from './UserMenu';
 import ColorModeToggle from './ColorModeToggle';
 import AccessibilityFontButtons from '../AccessibilityFontButtons';
 import PageTransition from './PageTransition';
-import LibraryMenuCarousel from '../LibraryMenuCarousel';
-
-const drawerWidth = 350;
+import LibraryMenuDrawer from '../LibraryMenuDrawer';
 
 const MainLayout: React.FC = () => {
-    const theme = useTheme();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const handleDrawerToggle = () => {
-        setDrawerOpen((prev) => !prev);
-    };
+    const handleDrawerToggle = () => setDrawerOpen(prev => !prev);
 
     const handleNavigate = (path: string) => {
         navigate(path);
@@ -36,13 +30,7 @@ const MainLayout: React.FC = () => {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar
-                position="fixed"
-                sx={{
-                    width: '100%',
-                    ml: 0,
-                }}
-            >
+            <AppBar position="fixed">
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -62,10 +50,11 @@ const MainLayout: React.FC = () => {
                 </Toolbar>
             </AppBar>
 
-            <LibraryMenuCarousel
+            <LibraryMenuDrawer
                 open={drawerOpen}
                 onClose={handleDrawerToggle}
                 onNavigate={handleNavigate}
+                currentPath={location.pathname}
             />
 
             <Box

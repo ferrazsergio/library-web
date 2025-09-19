@@ -29,3 +29,15 @@ export const fetchMe = async (): Promise<UserDTO> => {
     const { data } = await api.get('/users/me');
     return data;
 };
+
+export async function uploadAvatar(file: File): Promise<UserDTO> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    const { data } = await api.post('/users/me/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
+    });
+
+    return data;
+}

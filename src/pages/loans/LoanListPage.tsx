@@ -14,7 +14,6 @@ import {
     Paper,
     CircularProgress,
     IconButton,
-    Grid,
     Chip,
     Tooltip,
     Alert,
@@ -318,25 +317,21 @@ const LoanListPage: React.FC = () => {
                 <Typography variant="h4" gutterBottom fontWeight={600}>
                     Empréstimos
                 </Typography>
-                <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <motion.div
-                            whileHover={{ scale: 1.04, boxShadow: '0 2px 16px #1976d233' }}
-                            whileTap={{ scale: 0.97 }}
-                        >
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                onClick={() => navigate('/loans/new')}
-                                aria-label="Novo empréstimo"
-                                sx={{ fontWeight: 500, py: 1.1, fontSize: 17 }}
-                            >
-                                Novo Empréstimo
-                            </Button>
-                        </motion.div>
-                    </Grid>
-                </Grid>
+                <motion.div
+                    whileHover={{ scale: 1.04, boxShadow: '0 2px 16px #1976d233' }}
+                    whileTap={{ scale: 0.97 }}
+                    style={{ display: 'inline-block', marginBottom: 16 }}
+                >
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigate('/loans/new')}
+                        aria-label="Novo empréstimo"
+                        sx={{ fontWeight: 500, py: 1.1, fontSize: 17 }}
+                    >
+                        Novo Empréstimo
+                    </Button>
+                </motion.div>
                 <AnimatePresence>
                     {success && (
                         <motion.div
