@@ -17,6 +17,7 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     register: (name: string, email: string, password: string) => Promise<void>;
     logout: () => void;
+    loading: boolean; // NOVO
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,6 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+    const [loading, setLoading] = useState(true); // NOVO
 
     // Sincronização com múltiplas abas (login/logout)
     useEffect(() => {
@@ -39,33 +41,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return () => window.removeEventListener('storage', syncAuth);
     }, []);
 
-    // Logout se o token expirar (checa a cada load e a cada mudança do token)
+    // Inicializa/valida token/user ao carregar
     useEffect(() => {
-        if (!token) {
-            setUser(null);
-            return;
-        }
-        try {
-            const decoded = jwtDecode<DecodedToken>(token);
-            if (decoded.exp * 1000 < Date.now()) {
-                logout();
+        const initializeAuth = async () => {
+            if (!token) {
+                setUser(null);
+                setLoading(false);
                 return;
             }
-            const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
-            } else {
-                fetchUser(token);
-            }
-            // Timer para logout automático ao expirar o token
-            const timeout = decoded.exp * 1000 - Date.now();
-            const timer = setTimeout(() => {
+            try {
+                const decoded = jwtDecode<DecodedToken>(token);
+                if (decoded.exp * 1000 < Date.now()) {
+                    logout();
+                    setLoading(false);
+                    return;
+                }
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    setUser(JSON.parse(storedUser));
+                } else {
+                    // Busca do usuário autenticado se não está no storage
+                    const res = await api.get('/users/me', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setUser(res.data);
+                    localStorage.setItem('user', JSON.stringify(res.data));
+                }
+                // Timer para logout automático ao expirar o token
+                const timeout = decoded.exp * 1000 - Date.now();
+                const timer = setTimeout(() => {
+                    logout();
+                }, timeout);
+                return () => clearTimeout(timer);
+            } catch {
                 logout();
-            }, timeout);
-            return () => clearTimeout(timer);
-        } catch {
-            logout();
-        }
+            } finally {
+                setLoading(false);
+            }
+        };
+        initializeAuth();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
@@ -82,6 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = async (email: string, password: string) => {
+        setLoading(true);
         try {
             const response = await api.post('/auth/login', { email, password });
             const { token } = response.data;
@@ -91,6 +106,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch (error) {
             logout();
             throw error;
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -103,7 +120,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setToken(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        // Opcional: redirecionar para login
         // window.location.href = '/login?expired=1';
     }, []);
 
@@ -122,6 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 login,
                 register,
                 logout,
+                loading, // NOVO
             }}
         >
             {children}

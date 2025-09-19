@@ -28,11 +28,18 @@ const UserMenu: React.FC = () => {
         navigate("/login");
     };
 
+    const avatarSrc = user.avatarUrl
+        ? user.avatarUrl + (user.updatedAt ? `?t=${new Date(user.updatedAt).getTime()}` : "")
+        : undefined;
     return (
         <>
             <IconButton size="large" edge="end" color="inherit" onClick={handleMenu}>
-                <Avatar sx={{ width: 32, height: 32 }}>
-                    <AccountCircleIcon />
+                <Avatar
+                    src={avatarSrc}
+                    sx={{ width: 32, height: 32 }}
+                    alt={user.name}
+                >
+                    {(!avatarSrc && user.name) ? user.name[0].toUpperCase() : <AccountCircleIcon />}
                 </Avatar>
             </IconButton>
             <Menu

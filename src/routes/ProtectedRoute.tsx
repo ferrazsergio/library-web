@@ -1,4 +1,3 @@
-// @ts-ignore
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../components/contexts/AuthContext';
@@ -8,7 +7,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRoles }) => {
-    const { isAuthenticated, user } = useAuth();
+    const { isAuthenticated, user, loading } = useAuth();
+
+    if (loading) {
+        return <div>Carregando...</div>;
+    }
 
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;

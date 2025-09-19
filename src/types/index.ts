@@ -2,7 +2,14 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    role: string;
+    password?: string;
+    phone?: string;
+    address?: string;
+    role: 'admin' | 'librarian' | 'reader';
+    status: 'active' | 'inactive';
+    createdAt?: string;
+    updatedAt?: string;
+    avatarUrl?: string;
 }
 
 export interface Book {
