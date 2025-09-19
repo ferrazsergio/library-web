@@ -1,51 +1,99 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+# 📚 library-web
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend React do **Sistema de Gerenciamento de Biblioteca** — uma aplicação moderna e responsiva para controle de livros, leitores, empréstimos e muito mais!
 
-## Available Scripts
+![Dashboard Screenshot](./public/screenshots/dashboard.png)
 
-In the project directory, you can run:
+## ✨ Principais Funcionalidades
 
-### `npm start`
+- Autenticação segura (JWT) e controle de permissões (admin, bibliotecário, leitor)
+- Cadastro, edição e busca de livros, autores e usuários
+- Gestão completa de empréstimos, devoluções e multas
+- Dashboard com gráficos e indicadores em tempo real
+- Upload e recorte de foto de perfil do usuário
+- Acessibilidade: ajuste de contraste, tamanho de fonte e navegação por teclado
+- Interface responsiva (desktop/mobile)
+- Experiência fluida com animações e feedback visual
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🛠️ Stack Tecnológica
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **React 18 + TypeScript**
+- **Material UI** (MUI)
+- **React Router Dom** (SPA)
+- **Axios** (integração com API REST)
+- **Framer Motion** (animações)
+- **Validação de formulários** com feedback instantâneo
 
-### `npm test`
+## 🚀 Como rodar o projeto
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Pré-requisitos
 
-### `npm run build`
+- Node.js (versão 18+)
+- npm ou yarn
+- Uma instância da [library-api](https://github.com/ferrazsergio/library-api) rodando (veja o README da API!)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Instalação
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+git clone https://github.com/ferrazsergio/library-web.git
+cd library-web
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Configuração
 
-### `npm run eject`
+Crie um arquivo `.env` na raiz do projeto com:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```env
+REACT_APP_API_URL=http://localhost:8080/api/v1
+```
+Ajuste a URL conforme o endereço onde sua API está rodando.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Rodando em modo desenvolvimento
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+npm start
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Acesse [http://localhost:3000](http://localhost:3000) no navegador.
 
-## Learn More
+### Build para produção
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm run build
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-=======
-# library-web
-Frontend web application for the Library Management System
->>>>>>> 448a6daf93b8c9de6b0ae16a2ddf60cc99e66724
+Os arquivos finais estarão na pasta `build/`.
+
+## 🔗 API Back-end
+
+Este front depende da [library-api](https://github.com/ferrazsergio/library-api).  
+Confira o repositório para instruções de deploy e endpoints disponíveis.
+
+## 🖼️ Telas e Features Sugeridas para Prints
+
+- Dashboard com gráficos e atividades recentes
+- Tela de login
+- Listagem e cadastro de livros
+- Tela de perfil do usuário (com upload de foto)
+- Gestão de empréstimos
+- Responsividade no mobile
+
+## 📝 Scripts Disponíveis
+
+- `npm start` — roda em modo desenvolvimento
+- `npm test` — executa testes interativos
+- `npm run build` — gera build de produção
+- `npm run eject` — **(irreversível)** expõe configs internas do CRA
+
+## 🤝 Contribuições
+
+Pull Requests são bem-vindos! Sinta-se à vontade para abrir issues ou sugerir melhorias.
+
+## 📄 Licença
+
+MIT
+
+---
+
+Desenvolvido por [@ferrazsergio](https://github.com/ferrazsergio) — inspire, compartilhe e construa! 🚀
